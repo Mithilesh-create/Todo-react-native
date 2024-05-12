@@ -5,8 +5,8 @@ import Element from '../Components/Element';
 import { Button } from 'react-native-paper';
 import Modal from '../Components/Modal';
 import { request, PERMISSIONS } from 'react-native-permissions';
-import notifee from '@notifee/react-native';
 import { useBearStore } from '../Components/zustandstate';
+import notifee, { EventType, TriggerType } from '@notifee/react-native';
 
 function Home({ navigation }) {
     const requestPermission = async () => {
@@ -43,16 +43,63 @@ function Home({ navigation }) {
     const deleteHook = useBearStore((state) => state.deleteData)
     const completeHook = useBearStore((state) => state.completeData)
     const active = useBearStore((state) => state.ActiveTodos)
+    const [Noti, setNoti] = useState(null)
     const deleteData = async (index, id) => {
         deleteHook(index);
         await notifee.cancelTriggerNotification(id)
     }
     const completeData = async (index, id) => {
-        completeHook(index)
+        completeHook(index, data[index].Completed)
         await notifee.cancelTriggerNotification(id)
 
     }
+    async function onCreateTriggerNotification(id, title, timestampNotification) {
 
+        const trigger = {
+            type: TriggerType.TIMESTAMP,
+            timestamp: timestampNotification,
+            alarmManager: true,
+        };
+        const channelId = await notifee.createChannel({
+            id: 'default',
+            name: 'Default Channel',
+            sound: 'tone',
+            vibration: true,
+            vibrationPattern: [300, 500],
+        });
+
+
+        await notifee.createTriggerNotification(
+            {
+                id: id,
+                title: title,
+                body: `Your Task is pending`,
+                android: {
+                    channelId,
+                    smallIcon: 'ic_notification',
+                    actions: [
+                        {
+                            title: 'Snooze for 5 mins',
+                            icon: 'https://my-cdn.com/icons/snooze.png',
+                            pressAction: {
+                                id: 'snooze',
+                            },
+                        },
+                    ],
+                },
+            },
+            trigger,
+        );
+    }
+    notifee.onForegroundEvent(async ({ type, detail }) => {
+        setNoti(detail.notification.id);
+        if (type === EventType.ACTION_PRESS && detail.pressAction.id && (Noti == null || Noti != detail.notification.id)) {
+            let timestamp = new Date(Date.now());
+            timestamp.setMinutes(timestamp.getMinutes() + 5);
+            var futureTimestamp = timestamp.getTime();
+            await onCreateTriggerNotification(detail.notification.id, detail.notification.title, futureTimestamp)
+        }
+    });
 
 
     return (

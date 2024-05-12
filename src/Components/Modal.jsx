@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { StatusBar, StyleSheet, Text, View } from "react-native";
 import { Button, TextInput } from 'react-native-paper';
-import notifee, { TriggerType } from '@notifee/react-native';
+import notifee, { EventType, TriggerType } from '@notifee/react-native';
 import { useBearStore } from './zustandstate';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 
@@ -29,7 +29,7 @@ function Modal({ closeModal }) {
         var minutes = date.getMinutes();
         var ampm = hours >= 12 ? 'pm' : 'am';
         hours = hours % 12;
-        hours = hours ? hours : 12; // the hour '0' should be '12'
+        hours = hours ? hours : 12;
         minutes = minutes < 10 ? '0' + minutes : minutes;
         setHours(hours);
         setMinutes(minutes);
@@ -43,7 +43,7 @@ function Modal({ closeModal }) {
         if (Input.length === 0) return;
         if (Hours == null && Minutes == null) return;
         if (Hours <= 0 && Minutes <= 0) return;
-        const timestamp = Math.floor(Date.now() / 1000)
+        const timestamp = Date.now()
         let dataObj = {
             Task: Input,
             Hours: Hours,
@@ -77,6 +77,7 @@ function Modal({ closeModal }) {
             vibrationPattern: [300, 500],
         });
 
+
         let id = await notifee.createTriggerNotification(
             {
                 title: Input.toLowerCase().replace(/\b(\s\w|^\w)/g, function (txt) { return txt.toUpperCase(); }),
@@ -84,12 +85,24 @@ function Modal({ closeModal }) {
                 android: {
                     channelId,
                     smallIcon: 'ic_notification',
+                    actions: [
+                        {
+                            title: 'Snooze for 5 mins',
+                            icon: 'https://my-cdn.com/icons/snooze.png',
+                            pressAction: {
+                                id: 'snooze',
+                            },
+                        },
+                    ],
                 },
             },
             trigger,
         );
         return id;
     }
+
+
+
 
     return (
         <>

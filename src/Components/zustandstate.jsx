@@ -7,22 +7,22 @@ export const useBearStore = create(persist((set, get) => ({
     ActiveTodos: 0,
     DeletedTodos: 0,
     addData: (x) => set((state) => { return { data: [...state.data, x], ActiveTodos: state.ActiveTodos + 1 } }),
-    completeData: (index) => set((state) => {
+    completeData: (index, currstate) => set((state) => {
         const updatedTODOList = [...state.data];
-        updatedTODOList[index] = { ...updatedTODOList[index], Completed: !updatedTODOList[index].Completed };
-        return { data: updatedTODOList, ActiveTodos: state.ActiveTodos <= 0 ? 0 : state.ActiveTodos - 1 };
+        updatedTODOList[index] = { ...updatedTODOList[index], Completed: currstate == true ? updatedTODOList[index].Completed = false : updatedTODOList[index].Completed = true };
+        return { data: updatedTODOList, ActiveTodos: state.ActiveTodos <= 0 ? (currstate == false ? 0 : state.ActiveTodos + 1) : state.ActiveTodos - 1 };
     }),
     deleteData: (index) => set((state) => {
         const updatedTODOList = [...state.data];
-        var futureDate = new Date();
+        var futureDate = new Date(Date.now());
         futureDate.setDate(futureDate.getDate() + 30);
-        var futureTimestamp = Math.floor(futureDate.getTime());
+        var futureTimestamp = futureDate.getTime();
         updatedTODOList[index] = { ...updatedTODOList[index], isDeleted: true, deletionDate: futureTimestamp };
         return { data: updatedTODOList, DeletedTodos: state.DeletedTodos + 1, ActiveTodos: state.ActiveTodos <= 0 ? 0 : state.ActiveTodos - 1 };
     }),
     revertDeleteData: (index) => set((state) => {
         const updatedTODOList = [...state.data];
-        const timestamp = Math.floor(Date.now() / 1000)
+        const timestamp = Date.now()
         updatedTODOList[index] = { ...updatedTODOList[index], isDeleted: false, Completed: false, deletionDate: null, creationDate: timestamp };
         return { data: updatedTODOList, DeletedTodos: state.DeletedTodos <= 0 ? 0 : state.DeletedTodos - 1, ActiveTodos: state.ActiveTodos + 1 };
     }),

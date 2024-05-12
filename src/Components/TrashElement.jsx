@@ -2,7 +2,8 @@ import React from 'react';
 import { Text, View, StyleSheet } from "react-native";
 import { Button, ToggleButton } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
-function Element({ data, keyval, setDelete, setRevert }) {
+function Element({ data, keyval, setDelete, setRevert, createdAT }) {
+    let dateDay = new Date(createdAT);
 
     return (
         <View style={[styles.element, { backgroundColor: "white" }]} key={keyval}>
@@ -32,7 +33,8 @@ function Element({ data, keyval, setDelete, setRevert }) {
                 <Text style={{
                     fontFamily: "LED Dot-Matrix 400",
                     fontSize: 12,
-                }}>12th March</Text>
+                    textAlign: "center"
+                }}>{dateDay.toUTCString()}</Text>
 
             </View>
         </View>

@@ -21,6 +21,11 @@ function Trash(): React.JSX.Element {
                     <Text>ミリマインダー</Text>
                 </View>
                 <View style={styles.third}>
+                    <Text style={{
+                        alignSelf: "center",
+                        fontFamily: "LED Dot-Matrix 400",
+                        marginTop: 30, textAlign: "center"
+                    }}>Trash automatically gets empty every 30 days </Text>
                     {DeletedTodoCountHook === 0 ?
                         <Text style={{
                             alignSelf: "center", fontSize: 20,
@@ -33,8 +38,11 @@ function Trash(): React.JSX.Element {
                             <ScrollView contentContainerStyle={styles.content}>
                                 {
                                     data.map((e: any, i: any) => {
-                                        const timestamp = Math.floor(Date.now() / 1000)
-                                        return (e.isDeleted === true && e.isHidden === false && e.deletionDate < timestamp) ? <TrashElement data={e.Task} keyval={i} key={i}
+                                        const timestamp = Date.now()
+
+                                        return (e.isDeleted === true && e.isHidden === false
+                                            && e.deletionDate < timestamp
+                                        ) ? <TrashElement data={e.Task} keyval={i} key={i} createdAT={e.creationDate}
                                             setDelete={() => {
                                                 hiddenHook(i)
                                             }}
