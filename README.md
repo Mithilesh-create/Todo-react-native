@@ -65,4 +65,4 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## Download
 
-You can download the app from [Google Play Store]().
+You can download the app from [Google Play Store](https://play.google.com/store/apps/details?id=com.mithileshsharma&pli=1).
