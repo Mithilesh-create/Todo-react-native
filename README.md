@@ -52,9 +52,6 @@ Welcome to the Todo App! This is a simple yet powerful application developed in 
 <img src="./screenshots/Picture 5.png" width="200"/> 
 </p>
 
-<!-- ![Screenshot 1](/screenshots/Picture1.png)
-![Screenshot 2](/screenshots/Picture1.png) -->
-
 ## Contributing
 
 Contributions are welcome! If you find any issues or want to contribute to the project, feel free to open a pull request.
